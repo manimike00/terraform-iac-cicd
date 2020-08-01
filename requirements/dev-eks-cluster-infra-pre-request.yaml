@@ -95,10 +95,10 @@ Resources:
             build:
               commands:
                 - echo "Build Started"
-                - terraform init -bucket-config "bucket=$STAGE_BUCKET" -bucket-config "key=dev-infra-cicd/terraform.state" -bucket-config "region=$AWS_DEFAULT_REGION"
-#                - terraform init
-#                - terraform plan
-#                - terraform apply -auto-approve
+                - aws s3 cp s3://dev-infra-artifact/terraform.tfvars .
+                - terraform init -backend-config="bucket=$STAGE_BUCKET" -backend-config="key=$KEY/terraform.state" -backend-config "region=$AWS_DEFAULT_REGION"
+                - terraform plan
+                - terraform apply -auto-approve
             post_build:
               commands:
                 - echo "Post Build Completed"
@@ -111,6 +111,8 @@ Resources:
             Value: !Ref AWS::Region
           - Name: STAGE_BUCKET
             Value: !Ref StateBucket
+          - Name: KEY
+            Value: !Ref AWS::StackName
       Name: !Ref AWS::StackName
       ServiceRole: !Ref CodeBuildServiceRole
 
