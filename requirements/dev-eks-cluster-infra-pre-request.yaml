@@ -45,6 +45,8 @@ Resources:
                   - ec2:*
                   - s3:*
                   - logs:*
+                  - eks:*
+                  - iam:*
 
   CodePipelineServiceRole:
     Type: AWS::IAM::Role
