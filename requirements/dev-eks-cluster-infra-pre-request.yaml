@@ -72,6 +72,7 @@ Resources:
                   - codebuild:*
                   - codecommit:*
                   - s3:*
+                  - eks:*
                   - iam:PassRole
 
   CodeBuildProject:
