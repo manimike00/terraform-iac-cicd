@@ -199,7 +199,7 @@ Resources:
                 - Name: BuildOutput
               RunOrder: 1
         - Name: Deploy
-            Actions:
+          Actions:
             - Name: Deploy
               ActionTypeId:
                 Category: Build
