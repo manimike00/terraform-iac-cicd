@@ -96,7 +96,7 @@ Resources:
             build:
               commands:
                 - echo "Build Started"
-                - aws s3 cp s3://dev-infra-artifact/terraform.tfvars .
+                - aws s3 cp s3://demo-infra-artifacts-states/terraform.tfvars .
                 - terraform init -backend-config="bucket=$STAGE_BUCKET" -backend-config="key=$KEY/terraform.state" -backend-config "region=$AWS_DEFAULT_REGION"
                 - terraform plan
                 - terraform apply -auto-approve
@@ -114,7 +114,7 @@ Resources:
             Value: !Ref StateBucket
           - Name: KEY
             Value: !Ref AWS::StackName
-      Name: !Sub $(AWS::StackName)-one
+      #Name: !Sub $(AWS::StackName)
       ServiceRole: !Ref CodeBuildServiceRole
 
   CodeBuildProject2:
@@ -156,7 +156,7 @@ Resources:
             Value: !Ref StateBucket
           - Name: KEY
             Value: !Ref AWS::StackName
-      Name: !Sub $(AWS::StackName)-two
+      #Name: !Sub $(AWS::StackName)
       ServiceRole: !Ref CodeBuildServiceRole
 
   Pipeline:
