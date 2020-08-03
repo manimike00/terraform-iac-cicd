@@ -10,17 +10,15 @@ Parameters:
     Type: String
     Default: dev
 
-Resources:
-
   ArtifactBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub ${Branch}-infra-artifact
+    Type: String
+    Default: demo-infra-artifacts-states
 
   StateBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub ${Branch}-infra-tfstate
+    Type: String
+    Default: demo-infra-artifacts-states
+
+Resources:
 
   CodeBuildServiceRole:
     Type: AWS::IAM::Role
@@ -116,7 +114,7 @@ Resources:
             Value: !Ref StateBucket
           - Name: KEY
             Value: !Ref AWS::StackName
-      Name: !Ref AWS::StackName
+      Name: !Sub $(AWS::StackName)-one
       ServiceRole: !Ref CodeBuildServiceRole
 
   CodeBuildProject2:
@@ -158,7 +156,7 @@ Resources:
             Value: !Ref StateBucket
           - Name: KEY
             Value: !Ref AWS::StackName
-      Name: !Ref AWS::StackName
+      Name: !Sub $(AWS::StackName)-two
       ServiceRole: !Ref CodeBuildServiceRole
 
   Pipeline:
