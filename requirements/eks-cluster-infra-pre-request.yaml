@@ -75,7 +75,7 @@ Resources:
                   - eks:*
                   - iam:*
 
-  CodeBuildProject1:
+  CodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
       Artifacts:
@@ -114,49 +114,7 @@ Resources:
             Value: !Ref StateBucket
           - Name: KEY
             Value: !Ref AWS::StackName
-      #Name: !Sub $(AWS::StackName)
-      ServiceRole: !Ref CodeBuildServiceRole
-
-  CodeBuildProject2:
-    Type: AWS::CodeBuild::Project
-    Properties:
-      Artifacts:
-        Type: CODEPIPELINE
-      Source:
-        Type: CODEPIPELINE
-        BuildSpec: |
-          version: 0.2
-          phases:
-            pre_build:
-              commands:
-                - apt update
-                - apt install apt-transport-https curl -y
-                - curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl
-                - chmod +x ./kubectl
-                - mv ./kubectl /usr/local/bin/kubectl
-                - kubectl version --short --client
-            build:
-              commands:
-                - echo "Deploy Users"
-                - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $(grep "cluster_name" terraform.tfvars | awk '{print $3}' | sed 's,",,g')
-                - kubectl cluster-info
-                - kubectl version --short
-                - kubectl apply -f requirements/aws-auth.yml
-            post_build:
-              commands:
-                - echo "Post Build Completed"
-      Environment:
-        ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/docker:17.09.0
-        Type: LINUX_CONTAINER
-        EnvironmentVariables:
-          - Name: AWS_DEFAULT_REGION
-            Value: !Ref AWS::Region
-          - Name: STAGE_BUCKET
-            Value: !Ref StateBucket
-          - Name: KEY
-            Value: !Ref AWS::StackName
-      #Name: !Sub $(AWS::StackName)
+      Name: !Sub $(AWS::StackName)
       ServiceRole: !Ref CodeBuildServiceRole
 
   Pipeline:
@@ -190,26 +148,11 @@ Resources:
                 Version: 1
                 Provider: CodeBuild
               Configuration:
-                ProjectName: !Ref CodeBuildProject1
+                ProjectName: !Ref CodeBuildProject
               InputArtifacts:
                 - Name: App
               OutputArtifacts:
                 - Name: BuildOutput
-              RunOrder: 1
-        - Name: Deploy
-          Actions:
-            - Name: Deploy
-              ActionTypeId:
-                Category: Build
-                Owner: AWS
-                Version: 1
-                Provider: CodeBuild
-              Configuration:
-                ProjectName: !Ref CodeBuildProject2
-              InputArtifacts:
-                - Name: BuildOutput
-              OutputArtifacts:
-                - Name: DeployOutput
               RunOrder: 1
 
 Outputs:
