@@ -21,19 +21,19 @@
 //}
 
 
-module "owasp_top_10" {
+//module "owasp_top_10" {
   # This module is published on the registry: https://registry.terraform.io/modules/traveloka/waf-owasp-top-10-rules
 
   # Open the link above to see what the latest version is. Highly encouraged to use the latest version if possible.
 
-  source = "./modules/waf"
+//  source = "./modules/waf"
 
   # For a better understanding of what are those parameters mean,
   # please read the description of each variable in the variables.tf file:
   # https://github.com/traveloka/terraform-aws-waf-owasp-top-10-rules/blob/master/variables.tf
 
 //  region                         = "us-east-1"
-  profile                        = "admin-gen"
+//  profile                        = "admin-gen"
 //  product_domain                 = "tsi"
 //  service_name                   = "tsiwaf"
 //  environment                    = "staging"
@@ -46,4 +46,11 @@ module "owasp_top_10" {
 //  max_expected_cookie_size       = "4093"
 //  csrf_expected_header           = "x-csrf-token"
 //  csrf_expected_size             = "36"
+//}
+
+
+module "launch" {
+  source = "modules\/launch_configuration"
+  region = "us-east-1"
+  profile = "admin-gen"
 }
